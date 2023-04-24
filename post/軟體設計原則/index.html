@@ -1,0 +1,531 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>軟體設計原則 | Jia-Hong Liu</title><meta name="author" content="Jia-Hong Liu"><meta name="copyright" content="Jia-Hong Liu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、前言軟體也像人一樣，具有生命力，從出生到死亡，會經歷多種變化。軟體架構設計並非一蹴可幾的，而是不斷地發展演進。 軟體設計原則是一組幫助我們避開不良設計的指導方針。根據 Robert Martin 的理論，不良的設計主要有以下三個特點：  僵硬性（Rigidity）：指系統難以修改、擴展或適應變化。e.g. 每一個細微的改動都會影響到系統的其他功能  脆弱性（Fragility）：指系統容易出現">
+<meta property="og:type" content="article">
+<meta property="og:title" content="軟體設計原則">
+<meta property="og:url" content="http://cliff0917.github.io/post/%E8%BB%9F%E9%AB%94%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87/index.html">
+<meta property="og:site_name" content="Jia-Hong Liu">
+<meta property="og:description" content="一、前言軟體也像人一樣，具有生命力，從出生到死亡，會經歷多種變化。軟體架構設計並非一蹴可幾的，而是不斷地發展演進。 軟體設計原則是一組幫助我們避開不良設計的指導方針。根據 Robert Martin 的理論，不良的設計主要有以下三個特點：  僵硬性（Rigidity）：指系統難以修改、擴展或適應變化。e.g. 每一個細微的改動都會影響到系統的其他功能  脆弱性（Fragility）：指系統容易出現">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="http://cliff0917.github.io/img/avatar.png">
+<meta property="article:published_time" content="2023-04-21T06:17:00.000Z">
+<meta property="article:modified_time" content="2023-04-24T12:14:26.555Z">
+<meta property="article:author" content="Jia-Hong Liu">
+<meta property="article:tag" content="設計原則">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://cliff0917.github.io/img/avatar.png"><link rel="shortcut icon" href="/img/avatar.png"><link rel="canonical" href="http://cliff0917.github.io/post/%E8%BB%9F%E9%AB%94%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查詢的內容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '複製成功',
+    error: '複製錯誤',
+    noSupport: '瀏覽器不支援'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '剛剛',
+    min: '分鐘前',
+    hour: '小時前',
+    day: '天前',
+    month: '個月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '軟體設計原則',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-24 20:14:26'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/background.css"><link rel="stylesheet" href="/css/rightMenu.css"><script src="/live2d-widget/autoload.js"></script><style>#article-container.post-content h1:before, h2:before, h3:before, h4:before, h5:before, h6:before { -webkit-animation: avatar_turn_around 1s linear infinite; -moz-animation: avatar_turn_around 1s linear infinite; -o-animation: avatar_turn_around 1s linear infinite; -ms-animation: avatar_turn_around 1s linear infinite; animation: avatar_turn_around 1s linear infinite; }</style><script src="/live2d-widget/autoload.js"></script><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Jia-Hong Liu" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">載入中...</div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">標籤</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分類</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 彙整</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/index_img.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="Jia-Hong Liu"><span class="site-name">Jia-Hong Liu</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜尋</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 彙整</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">軟體設計原則</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">發表於</span><time class="post-meta-date-created" datetime="2023-04-21T06:17:00.000Z" title="發表於 2023-04-21 14:17:00">2023-04-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新於</span><time class="post-meta-date-updated" datetime="2023-04-24T12:14:26.555Z" title="更新於 2023-04-24 20:14:26">2023-04-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BB%9F%E9%AB%94%E8%A8%AD%E8%A8%88/">軟體設計</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字數總計:</span><span class="word-count">4.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">閱讀時長:</span><span>14分鐘</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>軟體也像人一樣，具有生命力，從出生到死亡，會經歷多種變化。軟體架構設計並非一蹴可幾的，而是不斷地發展演進。</p>
+<p><strong>軟體設計原則是一組幫助我們避開不良設計的指導方針</strong>。根據 <code>Robert Martin</code> 的理論，不良的設計主要有以下三個特點：</p>
+<ul>
+<li><p><strong>僵硬性（Rigidity）</strong>：指系統難以修改、擴展或適應變化。e.g. 每一個細微的改動都會影響到系統的其他功能</p>
+</li>
+<li><p><strong>脆弱性（Fragility）</strong>：指系統容易出現意外的錯誤或異常，這可能會導致系統崩潰或無法正常運行。e.g. 每做一次改動，總會引起系統預期之外的故障</p>
+</li>
+<li><p><strong>不可移植性（Immobility）</strong>：指系統難以移植到其他平台或環境中。e.g. 有些系統依賴特定的技術或平台，導致要移植到其他平台時，程式碼不能重用（Resue），而是必須整個重寫（Rewrite）</p>
+</li>
+</ul>
+<p><strong>下面列舉的軟體設計原則主要是從網路、書籍中整理而來的，並不完整。此外，有時我們必須在一些「有衝突的原則」之間做出權衡和取捨。</strong></p>
+<h1 id="二、通用設計原則"><a href="#二、通用設計原則" class="headerlink" title="二、通用設計原則"></a>二、通用設計原則</h1><h2 id="1-KISS"><a href="#1-KISS" class="headerlink" title="1. KISS"></a>1. KISS</h2><p>即 <code>Keep It Simple, Stupid</code>。<strong>指設計時應堅持「簡約」原則，避免不必要的複雜化，使之易於修改。</strong></p>
+<p>簡單清晰、功能強大是軟體設計最重要的原則和目標。但是軟體工程本身錯綜複雜，而且「簡單」並沒有一個衡量標準。一般來說，軟體工程主要是透過以下幾種方式判斷一個設計是否簡單：</p>
+<ul>
+<li>讓其他軟體工程師能以一種最容易的方式使用</li>
+<li>當系統變得更龐大、複雜時，其邏輯依然能夠被理解</li>
+<li>如果系統無法保持簡單，那麼我們能做的就是保持各個局部的簡單，也就是單個的 class、module、application 的設計目標、工作原理都能被迅速理解</li>
+</ul>
+<blockquote>
+<p><strong>個人理解</strong>：保持簡單，但不能掩蓋軟體本身豐富的內涵，即「<strong>簡約但不簡單</strong>」！簡約是指對複雜的事物抽絲剝繭、去除細枝末節，顯露其主要邏輯的過程。e.g. 寫文章時，盡可能用樸實的語言，言簡意賅地表達想法，但卻又要避免語言過於貧乏。</p>
+<p>軟體的「抽象」和「直觀」，其實是一對矛盾的關係，而軟體設計的目標就是要保證這兩者之間的平衡。</p>
+<ul>
+<li>過於「抽象」會陷入「過度設計」的困境，導致系統過於複雜、不易理解</li>
+<li>過於「直觀」而缺乏抽象，會使系統含有大量的重複，導致其不易擴展、維護</li>
+</ul>
+</blockquote>
+<h2 id="2-DRY"><a href="#2-DRY" class="headerlink" title="2. DRY"></a>2. DRY</h2><p>即 <code>Don&#39;t Repeat Yourself</code>。<strong>指設計時應避免重複程式碼。</strong></p>
+<p><strong>「重複程式碼是讓軟體變爛的萬惡之首」</strong>。<code>DRY</code> 並不是指你不能複製程式碼，而是你複製的<strong>程式碼中不能包含重複的「訊息」</strong>。</p>
+<p>程式碼之所以要寫的好，不要重複某些「訊息」，<strong>是因為需求人員總是更改需求</strong>。為了減少修改程式碼的痛苦，我們不能重複任何訊息。e.g. 有一天需求人員說，要把分隔符號從分號改成頓號，如果相關的程式碼散佈在各個地方，那就會需要改很多地方。</p>
+<p><strong>「重複程式碼」的常見形式：</strong></p>
+<ul>
+<li>魔術數字（Magic Number）：指缺乏解釋或命名的獨特數值，通常指寫死在程式碼裡的具體數值（也可指非數字的值，例如字元、字串）。e.g. <code>price_tax = 1.05 * price</code> 中的 <code>1.05</code></li>
+<li>相同的程式碼區塊</li>
+<li>相似的程式碼邏輯及操作</li>
+</ul>
+<blockquote>
+<p><strong>個人理解</strong>：解決重複的最佳方式就是培養良好的 coding 習慣來避免重複，並透過重構（Refactor）的手段來消除重複。</p>
+<p>發現和解決重複並不困難，透過提取 abstract、method 等方法就能消除重複，但困難的是「<strong>立即行動</strong>」去解決重複，並從中不斷地磨礪和提升自己的技巧。</p>
+<p>解決了重複，經過一段時間後，你就會發現自己對整個系統的理解在不知不覺中提高了不少。</p>
+</blockquote>
+<h2 id="3-Maximize-Cohesion-Minimize-Coupling"><a href="#3-Maximize-Cohesion-Minimize-Coupling" class="headerlink" title="3. Maximize Cohesion, Minimize Coupling"></a>3. Maximize Cohesion, Minimize Coupling</h2><p>即「<strong>高內聚、低耦合</strong>」。這是判斷設計好壞的標準，主要是看 module 內的內聚性是否足夠高，module 間的耦合性是否足夠低。</p>
+<ul>
+<li><p><strong>內聚性（Cohesion）</strong>：指一個 module 內部各元素之間相互依賴的程度，一個 module 內的元素應該相互關聯，共同完成一個特定的任務或目標<br>➔ 高內聚的 module 通常易於理解、測試和修改，因為相關的元素都在一起，有利於維護和重用</p>
+</li>
+<li><p><strong>耦合性（Coupling）</strong>：指 module 之間相互依賴的程度。耦合性越高，module 之間的相互影響就越大，這會使得系統更加脆弱、難以測試、修改和擴展。因此，降低耦合性是軟體設計中的一個重要目標</p>
+</li>
+</ul>
+<p><strong>實現「高內聚、低耦合」的常用方式：</strong></p>
+<ul>
+<li>少用 class 的繼承，多用 API 來隱藏實作的細節</li>
+<li>module 的功能盡可能的單一，因為功能單一的 module 提供其它 module 調用的機會較少</li>
+<li>遵循一個定義只在一個地方出現</li>
+<li>少使用全局變數</li>
+<li>class 中的 attribute 和 method 盡量宣告成 <code>private</code>，少使用 <code>public</code></li>
+<li>多使用 Design Pattern，比如 <code>MVC</code> 的設計模式可降低介面（Interface）、業務邏輯（Business Logic）之間的耦合度</li>
+<li>避免直接操作或調用其它 module</li>
+</ul>
+<h2 id="4-SOC"><a href="#4-SOC" class="headerlink" title="4. SOC"></a>4. SOC</h2><p>即 <code>Separation of Concerns</code>（關注點分離）。<strong>指將複雜的系統分解為不同的獨立 module，每個 module 都應該專注於一個特定的功能或關注點（Concern）</strong>。這樣可以降低系統的複雜性，提高程式碼的可讀性、可維護性和可重用性。</p>
+<p><code>MVC</code> 就是關注點分離的一個體現，其目的是將應用程式的表示層、業務邏輯層分離，使得不同的部分可以獨立地進行修改、測試，同時降低它們之間的耦合性。以下是 <code>MVC</code> 的基本架構：</p>
+<ul>
+<li><code>Model</code> 負責和「業務邏輯」有關的功能，通常負責和資料庫溝通</li>
+<li><code>View</code> 負責畫面的呈現，通常是根據 <code>Model</code> 提取的資料來呈現</li>
+<li><code>Controller</code> 負責使用者的互動邏輯，並向 <code>Model</code> 傳送資料</li>
+</ul>
+<p><img src="https://i.imgur.com/kRfDmNL.png"></p>
+<p><code>MVC</code> 設計中，各個關注點是分開的，這樣有助於我們管理和開發複雜的應用程式，我們可以在某個時間點只集中精力在其中的某一個關注點，而不是所有的部分。</p>
+<blockquote>
+<p>好的架構必須使每個關注點相互分離，也就是說系統中的一個部分發生了變化，不會影響到其他部分。即使需要改變，也能夠清晰地識別出哪些部分需要改變。如果需要擴展架構，影響將會最小化。</p>
+</blockquote>
+<p><strong>常見的分離方式：</strong></p>
+<ul>
+<li><p><strong>分層架構（Layered Architecture）</strong>：將應用程式分為多個層級，每一層負責不同的功能。一般來說，分層架構包括：</p>
+<ul>
+<li>表示層（Presentation Layer）</li>
+<li>業務邏輯層（Business Logic Layer）</li>
+<li>資源訪問層（Resource Access Layer）</li>
+</ul>
+</li>
+<li><p><strong>水平分離（Horizontal Separation）</strong>：指將系統中的不同功能的 module 分離到不同的節點中。e.g. 將一個大型的應用程式分離成多個微服務（Microservices），每個微服務運行在不同的服務器或容器中，以實現系統的橫向擴展性和容錯性</p>
+<p>  <img src="https://i.imgur.com/yQZ2C5z.png"></p>
+</li>
+<li><p><strong>垂直分離（Vertical Separation）</strong>：將不同層級的功能分離開來，讓每一層只負責特定的任務和責任。每一層都可以被視為一個獨立的單元，並且不直接與其他層進行互動，而是通過明確定義的 API 進行溝通。e.g. <code>MVC</code> 架構</p>
+<p>  <img src="https://i.imgur.com/lQo8OIx.png"></p>
+</li>
+<li><p><strong>切面分離（Aspect Separation）</strong>：有些功能是多層之間都需要的，e.g. 日誌、安全性、事務管理等，因此可以把這類跨多層的業務從業務邏輯中分離出來，並將其封裝成可重用的 module</p>
+<p>  <img src="https://i.imgur.com/KkDGPK2.png"></p>
+</li>
+<li><p><strong>服務分離（Service Separation）</strong>：系統中的每個 module 或組件都被視為一個獨立的服務，它們之間通過定義清晰的 API 和協議進行通訊和協作。每個服務都專注於實現一個特定的功能，並提供對外的 API，以便其他服務可以使用它的功能，從而實現系統的整體目標。</p>
+</li>
+</ul>
+<h2 id="5-YAGNI"><a href="#5-YAGNI" class="headerlink" title="5. YAGNI"></a>5. YAGNI</h2><p>即 <code>You Ain’t Gonna Need It</code>（你不需要它）。指在開發軟體時，<strong>不要去實現目前不需要的功能，以避免浪費時間和資源</strong>。</p>
+<p><code>YAGNI</code> 和 <code>KISS</code> 有點類似，它們都致力於構建精簡的設計。差別在於：</p>
+<ul>
+<li><code>KISS</code> 是透過盡可能簡單地完成某件事情來實現精簡的設計</li>
+<li><code>YAGNI</code> 是透過根本就不實現它來達到精簡的設計</li>
+</ul>
+<p><code>YAGNI</code> 的理念是建議我們不要去「過度設計」，而是在實際需要的時候再去實作。因為在開發軟體的過程中，<strong>需求和情況經常會改變</strong>，先前所加入的多餘程式碼和功能可能會變成負擔，讓軟體變得更加複雜、難以維護。</p>
+<blockquote>
+<p><strong>個人理解</strong>：</p>
+<ul>
+<li><p><code>YAGNI</code> 是在告誡我們「<strong>寫程式不要畫蛇添足，否則很容易弄巧成拙</strong>」。撰寫程式碼時，不要去假想一些需求或者場景，因為絕大多數我們所設想的場景都不會發生，但我們所多寫的那些程式碼卻會長期滯留在系統中，這不僅會讓自己和團隊花費更多的時間、精力去理解和維護，更可能會讓將來的維護者感到困惑</p>
+</li>
+<li><p>沒有被使用到的程式碼，應立即刪除，從而保持系統的精簡</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="6-Boy-Scout-Rule"><a href="#6-Boy-Scout-Rule" class="headerlink" title="6. Boy-Scout Rule"></a>6. Boy-Scout Rule</h2><p>即 <code>童子軍規則</code>。美國童子軍有一條規則：「讓營地比你剛來時更乾淨」。如果看到地上有垃圾，不管是誰扔的，都要清理乾淨，為下一批來的人創造一個好的環境。</p>
+<p><code>Boy-Scout Rule</code> 指在對現有程式碼進行更改時，程式碼的品質往往會降低，從而累積技術債。所以需要<strong>始終保持程式碼的整潔</strong>。</p>
+<p>不管原作者是誰，只要我們努力去改進程式碼，哪怕是多麼小的改進，都能讓系統不會持續變壞。這讓系統在發展的同時會逐漸變得更好，也會看到團隊成員們關心整體的系統，而不是只關心各自負責的部分。</p>
+<p><code>Boy-Scout Rule</code> 告訴我們團隊成員應互助合作，互相清理程式碼。這不僅是為了自己好，更是為了團隊好。</p>
+<p><code>Boy-Scout Rule</code> 所提倡的<strong>對程式碼的壞味道（Bad Smell）要儘早修復</strong>，這個概念其實就是我們耳熟能詳的「<strong>破窗效應（Broken Window Effect）</strong>」</p>
+<p><strong>破窗效應</strong></p>
+<blockquote>
+<p>如果有人打壞了某棟建築物的窗戶，而這扇窗戶又得不到及時的修復，其他人就會感覺到這個社區不受監管，進而做出破壞、污染等不良行為，從而滋生出更多的犯罪活動</p>
+</blockquote>
+<ul>
+<li>環境早就髒了，我扔的這點垃圾根本起不到什麼關鍵性作用</li>
+<li>之前的人也都是這樣寫的</li>
+<li>反正也不是只有我是這樣寫的</li>
+</ul>
+<p>不少人會像上面這樣辯解自己的過錯。其實，這些說法根本站不住腳，錯了就是錯了，影響的大小並不會改變行為錯誤的本質，別人的錯誤更不會是證明自己沒錯的理由。任何一種不良現象的存在，都有可能傳遞一種錯誤的訊息，進而導致更糟的後果，正所謂「<strong>勿以善小而不為，勿以惡小而為之</strong>」。</p>
+<h2 id="其他原則"><a href="#其他原則" class="headerlink" title="其他原則"></a>其他原則</h2><ul>
+<li><p><strong>避免過早優化（<code>Avoid Premature Optimization</code>）</strong>：「<strong>過早的優化是萬惡之源</strong>」，在程式碼開發的早期階段就花費過多的時間和資源進行優化，這種優化很可能是非必要的，因為尚未發現實際的效能問題。這種行為可能會浪費開發人員的時間和資源，也可能會降低程式碼的可讀性、可維護性。</p>
+</li>
+<li><p><strong>最小驚訝原則（<code>Principle of least astonishment</code>）</strong>：軟體應符合使用者的直覺和期望，而不是讓使用者感到驚訝或困惑。也就是說，你撰寫的程式碼只需按照需求來撰寫即可，其他華麗的功能就不必了，以免弄巧成拙。</p>
+</li>
+<li><p><strong>程式碼重用原則（<code>Code Reuse is Good</code>）</strong>：重用程式碼能提高可讀性，並縮短開發時間。</p>
+</li>
+<li><p><strong>別讓我思考（<code>Don’t Make Me Think</code>）</strong>：程式碼一定要易讀、易理解，這樣別人才會欣賞，也才能夠給你提出合理的建議。複雜的程式碼，其他人是會避而遠之的。</p>
+</li>
+<li><p><strong>為維護者寫程式碼（<code>Write Code for the Maintainer</code>）</strong>：優秀的程式碼，應使本人或是他人在將來都能夠對它進行修改或維護。程式碼維護時，通常本人會比較容易，但對他人來說卻會比較麻煩。因此，撰寫程式碼時要盡可能地保證他人能夠容易維護。</p>
+</li>
+<li><p><strong>正交原則（<code>Orthogonality Principle</code>）</strong>：module 之間應盡可能地相互獨立，一個 module 的改變不應該影響到其他的 module。</p>
+</li>
+<li><p><strong>做最簡單的事就讓程式碼可運行（<code>Do the simplest thing that could possibly work</code>）</strong>：盡可能做最簡單的事就可以讓程式碼成功運行。</p>
+</li>
+<li><p><strong>隱藏實作細節（<code>Hide Implementation Details</code>）</strong>：透過提供 API 來隱藏實作細節，避免洩漏任何不必要的訊息。</p>
+</li>
+<li><p><strong>莫非定律（<code>Murphy&#39;s Law</code>）</strong>：如果事情有變壞的可能，不管這種可能性有多小，它總會發生。主要內容如下：</p>
+<ul>
+<li>任何事都沒有表面看起來那麼簡單</li>
+<li>會出錯的事總會出錯</li>
+<li>如果你擔心某種情況發生，那麼它就更有可能發生</li>
+</ul>
+</li>
+</ul>
+<h1 id="三、物件導向設計原則-SOLID"><a href="#三、物件導向設計原則-SOLID" class="headerlink" title="三、物件導向設計原則 - SOLID"></a>三、物件導向設計原則 - SOLID</h1><h2 id="1-SRP"><a href="#1-SRP" class="headerlink" title="1. SRP"></a>1. SRP</h2><p>即 <code>Single Responsibility Principle</code>（單一職責原則）。<strong>指每個 class 都應該有一個單一的功能，且該功能應由這個 class 封裝起來。</strong></p>
+<p>如果一個 class 承擔的職責過多，就等於把這些職責耦合在一起了。一個職責的變化可能會削弱或抑制這個 class 完成其他職責的能力。這種耦合會導致脆弱的設計，當發生變化時，很容易會受到意想不到的破壞。</p>
+<p><strong>此原則的核心就是解耦（Decoupling）和增強內聚性。</strong></p>
+<h3 id="好處"><a href="#好處" class="headerlink" title="好處"></a>好處</h3><ul>
+<li>class 的複雜性降低，實作什麼職責都有明確的定義</li>
+<li>降低複雜性，並提高可讀性、可維護性</li>
+<li>降低因變更引起的風險</li>
+</ul>
+<h3 id="注意事項"><a href="#注意事項" class="headerlink" title="注意事項"></a>注意事項</h3><ul>
+<li><code>SRP</code> 最難劃分的就是職責</li>
+<li><code>SRP</code> 制定標準，用職責和變化來衡量 API 的設計好壞與否</li>
+<li>API 一定要做到 <code>SRP</code>，class 的設計盡量做到只有一個原因會引起它變化</li>
+</ul>
+<h2 id="2-OCP"><a href="#2-OCP" class="headerlink" title="2. OCP"></a>2. OCP</h2><p>即 <code>Open Closed Principle</code>（開閉原則）。指「<strong>對擴充開放，對修改封閉</strong>」。</p>
+<p><strong>指軟體設計應具有可擴展性，以應對未來的需求變化，同時又要保持對現有程式碼的穩定性和保護。</strong></p>
+<h3 id="好處-1"><a href="#好處-1" class="headerlink" title="好處"></a>好處</h3><ul>
+<li>可重用性高，通過設計可重用的 module 來提高重用性。重用已經存在的 module 可以簡化程式碼，並提高開發效率</li>
+<li>可維護性高，因為在擴展時不需要修改現有程式碼，這樣可以降低出錯的風險</li>
+<li>可擴展性高，因為已經被設計成可以在不修改現有程式碼的情況下添加新功能</li>
+<li>可測試性高，因為已經被設計成可以進行獨立測試的 module</li>
+</ul>
+<h2 id="3-LSP"><a href="#3-LSP" class="headerlink" title="3. LSP"></a>3. LSP</h2><p>即 <code>Liskov Substitution Principle</code>（里氏替換原則）。指「<strong>子類別（Derived Class）可以擴展父類別（Base Class）的功能，但不能改變父類別原有的功能</strong>」。</p>
+<p><strong><code>LSP</code> 的目的是保證子類別可以完全替代父類別，而不會對系統的正確性產生任何負面影響</strong>。如果一個類別不能替代它的父類別，就可能會導致程式錯誤或產生不可預測的行為。</p>
+<h3 id="好處-2"><a href="#好處-2" class="headerlink" title="好處"></a>好處</h3><ul>
+<li>可重用性高，因為子類別可以替代父類別，所以不需要對程式碼進行大規模的修改</li>
+<li>可維護性高，這樣的設計使程式碼更具可讀性</li>
+</ul>
+<h2 id="4-ISP"><a href="#4-ISP" class="headerlink" title="4. ISP"></a>4. ISP</h2><p>即 <code>Interface Segregation Principle</code>（介面隔離原則）。<strong>指使用者不應該實作他們不需要的 interface</strong>。此原則的核心是「<strong>促進軟體系統的可維護性、可擴展性和可讀性</strong>」。</p>
+<p>「<strong>interface 盡量細化，且 interface 中的方法盡量少</strong>」。</p>
+<h3 id="注意事項-1"><a href="#注意事項-1" class="headerlink" title="注意事項"></a>注意事項</h3><ul>
+<li><p>對 interface 進行細化可以提高程式的靈活度，但是如果過小，則會造成 interface 數量過多，導致設計複雜化。所以一定要適度</p>
+</li>
+<li><p>為依賴該 interface 的 module 提供客製化的服務，只暴露給調用的 module 它所需要的方法，並隱藏一切它不需要的方法，這樣才能建立最小的依賴關係</p>
+</li>
+<li><p>提高內聚，減少耦合。使 interface 用最少的方法去完成最多的事</p>
+</li>
+</ul>
+<h2 id="5-DIP"><a href="#5-DIP" class="headerlink" title="5. DIP"></a>5. DIP</h2><p>即 <code>Dependency Inversion Principle</code>（依賴反轉原則）。<strong>指高層 module 不應該依賴低層 module，兩者都應依賴其抽象。</strong></p>
+<p>高層、低層是相對關係，其中細節指的是具體的實作，相較於抽象的穩定，細節的變化較多。</p>
+<p>「<strong>抽象不應該依賴細節，細節應該依賴於抽象」，因為「相對於細節的多變性，抽象的東西要穩定的多</strong>」。</p>
+<p>e.g. 到賣場消費要付款時，使用信用卡付款的設計如下圖（箭頭左側的設計）。其中，信用卡是低層次的 module，而付款這個行為是高層次的 module。我們可以發現付款這個行為跟信用卡有直接的關係。</p>
+<ul>
+<li><p>隨著時代的進步，會有更多的付款方式出現。但是，如果照著上面的方式去設計系統的話，每當出現一個新的付款方式，就要去更動一次程式，這並非理想的設計</p>
+</li>
+<li><p>因此，我們可以將付款行為抽出成 interface。抽出一個 <code>IPayment</code> 作為 interface，讓付款方式 <code>CreditCard</code> 和 <code>QRCode</code> 去實作 <code>IPayment</code>，而 <code>Payment</code> 只要負責導入 <code>IPayment</code> 即可（箭頭右側的設計）</p>
+</li>
+<li><p>假設未來要新增虛擬貨幣的付款方式，只需要新增一個 <code>BlockChain</code> 的 class 即可，不需要動到 <code>Payment</code> 本身</p>
+</li>
+<li><p>可以將 <code>CreditCard</code>、<code>QRCode</code> 看成付款的細節（變化度高），這兩個付款方式應該依照抽象類別 <code>IPayment</code> 去實作（穩定度高），而不是讓 <code>IPayment</code> 去迎合 <code>CreditCard</code> 或 <code>QRCode</code></p>
+</li>
+</ul>
+<p><img src="https://i.imgur.com/EYFPkh9.png"></p>
+<h3 id="好處-3"><a href="#好處-3" class="headerlink" title="好處"></a>好處</h3><ul>
+<li>透過抽象實現低耦合的系統設計，提高程式碼的可讀性、可重用性</li>
+<li>提高程式碼的可測試性，減少其修改和維護的成本</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cliff0917.github.io">Jia-Hong Liu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章連結: </span><span class="post-copyright-info"><a href="http://cliff0917.github.io/post/%E8%BB%9F%E9%AB%94%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87/">http://cliff0917.github.io/post/%E8%BB%9F%E9%AB%94%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版權聲明: </span><span class="post-copyright-info">本部落格所有文章除特別聲明外，均採用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 許可協議。轉載請註明來自 <a href="http://cliff0917.github.io" target="_blank">Jia-Hong Liu</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87/">設計原則</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.png" data-sites="facebook,twitter,linkedin"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/post/Linux-%E5%BB%BA%E7%AB%8B%E7%B6%B2%E5%9F%9F/" title="Linux 建立網域"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Linux 建立網域</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 評論</span></div></div><div class="comment-wrap"><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目錄</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E8%A8%80"><span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E9%80%9A%E7%94%A8%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87"><span class="toc-text">二、通用設計原則</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-KISS"><span class="toc-text">1. KISS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-DRY"><span class="toc-text">2. DRY</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Maximize-Cohesion-Minimize-Coupling"><span class="toc-text">3. Maximize Cohesion, Minimize Coupling</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-SOC"><span class="toc-text">4. SOC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-YAGNI"><span class="toc-text">5. YAGNI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Boy-Scout-Rule"><span class="toc-text">6. Boy-Scout Rule</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%8E%9F%E5%89%87"><span class="toc-text">其他原則</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87-SOLID"><span class="toc-text">三、物件導向設計原則 - SOLID</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-SRP"><span class="toc-text">1. SRP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A5%BD%E8%99%95"><span class="toc-text">好處</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85"><span class="toc-text">注意事項</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-OCP"><span class="toc-text">2. OCP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A5%BD%E8%99%95-1"><span class="toc-text">好處</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-LSP"><span class="toc-text">3. LSP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A5%BD%E8%99%95-2"><span class="toc-text">好處</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-ISP"><span class="toc-text">4. ISP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85-1"><span class="toc-text">注意事項</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-DIP"><span class="toc-text">5. DIP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A5%BD%E8%99%95-3"><span class="toc-text">好處</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 By Jia-Hong Liu</div><div class="footer_custom_text">There is only one corner of the universe you can be certain of improving, and that's your own self.</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="閱讀模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="簡繁轉換">簡</button><button id="darkmode" type="button" title="淺色和深色模式轉換"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="單欄和雙欄切換"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="設定"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目錄"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直達評論"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到頂部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typesetPromise()
+}</script><script>function loadDisqus () {
+  var disqus_config = function () {
+    this.page.url = 'http://cliff0917.github.io/post/%E8%BB%9F%E9%AB%94%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87/'
+    this.page.identifier = '/post/%E8%BB%9F%E9%AB%94%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87/'
+    this.page.title = '軟體設計原則'
+  };
+
+  window.disqusReset = () => {
+    DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  if (window.DISQUS) disqusReset()
+  else {
+    (function() { 
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-cliff0917-github-io.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  }
+
+  document.getElementById('darkmode').addEventListener('click', () => {
+    setTimeout(() => window.disqusReset(), 200)
+  })
+}
+
+if ('Disqus' === 'Disqus' || !false) {
+  if (false) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+  else loadDisqus()
+} else {
+  function loadOtherComment () {
+    loadDisqus()
+  }
+}
+</script></div><script defer src="https://npm.elemecdn.com/jquery@latest/dist/jquery.min.js"></script><script defer data-pjax src="/js/rightMenu.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜尋</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  資料庫載入中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜尋文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="fa-solid fa-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="fa-solid fa-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="fa-solid fa-arrow-rotate-right"></i></div><div class="rightMenu-item" id="menu-home"><i class="fa-solid fa-house"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" href="/archives/"><i class="fa-solid fa-archive"></i><span>文章彙整</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="fa-solid fa-folder-open"></i><span>文章分類</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="fa-solid fa-tags"></i><span>文章標籤</span></a></div><div class="rightMenu-group rightMenu-line rightMenuNormal"><div class="rightMenu-item" id="menu-translate"><i class="fa-solid fa-earth-asia"></i><span>繁簡切換</span></div><div class="rightMenu-item" id="menu-darkmode"><i class="fa-solid fa-moon"></i><span>切換模式</span></div></div></div><div id="rightmenu-mask"></div></body></html>
